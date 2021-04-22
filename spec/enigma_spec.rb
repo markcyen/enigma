@@ -1,3 +1,5 @@
+require_relative 'spec_helper'
+
 RSpec.describe Enigma do
   context '#initialize' do
     it 'exists' do
