@@ -11,7 +11,10 @@ class Enigma
     chr_set = ("a".."z").to_a << " "
   end
 
-  def encrypt(encryption, key, date = Date.today.strftime('%m%d%y'))
+  def encrypt(encryption,
+    key = 5.times.map{rand(10)}.join,
+    date = Date.today.strftime('%m%d%y')
+  )
     downcase_encryption = encryption.downcase
     encryption_array = downcase_encryption.split("")
     convert_keys = key.chars
@@ -44,19 +47,29 @@ class Enigma
 
     encryption_index_array = []
     encryption_array.each do |chr|
-      encryption_index_array << characters_set.index(chr)
+      if !characters_set.include?(chr)
+        encryption_index_array << chr
+      else
+        encryption_index_array << characters_set.index(chr)
+      end
     end
 
     combined_encrypt = encryption_index_array.zip(calculate_shift.cycle)
     final_encrypt_numbers = combined_encrypt.map do |encrypt_numbers|
-      encrypt_numbers.reduce(0) do |sum, number|
-        sum + number
+      if encrypt_numbers.any?{ |chr| chr.instance_of?(String) }
+        encrypt_numbers.find{ |chr| chr.instance_of?(String) }
+      else
+        encrypt_numbers.reduce(0) do |sum, number|
+          sum + number
+        end
       end
     end
 
     encrypted = final_encrypt_numbers.map do |shift|
-      if shift >= characters_set.size
-        characters_set[shift % 27]
+      if shift.instance_of?(String)
+        shift
+      elsif shift >= characters_set.size
+        characters_set[shift % characters_set.size]
       else
         characters_set[shift]
       end
@@ -74,7 +87,9 @@ class Enigma
     # }
   end
 
-  def decrypt(decryption, key, date = Date.today.strftime('%m%d%y'))
+  def decrypt(decryption,
+    key,
+    date = Date.today.strftime('%m%d%y'))
     lowercase_decryption = decryption.downcase
     decryption_array = lowercase_decryption.split("")
     convert_keys = key.chars
@@ -108,18 +123,30 @@ class Enigma
 
     decryption_index_array = []
     decryption_array.each do |chr|
-      decryption_index_array << characters_set.index(chr)
+      if !characters_set.include?(chr)
+        decryption_index_array << chr
+      else
+        decryption_index_array << characters_set.index(chr)
+      end
     end
 
     combined_decrypt = decryption_index_array.zip(calculate_shift.cycle)
     final_decrypt_numbers = combined_decrypt.map do |(num1, num2)|
-      num1 - num2
+      if num1.instance_of?(String)
+        num1
+      else
+        num1 - num2
+      end
     end
 
     decrypted = final_decrypt_numbers.map do |shift|
-      if shift <= -characters_set.size
-        characters_set[shift % 27]
+      if shift.instance_of?(String)
+        shift
+      elsif shift <= -characters_set.size
+        # encrypted <<
+        characters_set[shift % characters_set.size]
       else
+        # encrypted <<
         characters_set[shift]
       end
     end.join
