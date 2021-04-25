@@ -84,12 +84,15 @@ RSpec.describe Enigma do
   end
 
   context '#encrypt with random five digit number' do
-    xit 'encrypts message using five digit random number and todays date' do
+    it 'encrypts message using five digit random number and todays date' do
       enigma = Enigma.new
+      conversion = Conversion.new
 
+      allow(enigma).to receive(:generate_random_key) { "02715" }
+      allow(Date).to receive(:today).and_return(Date.new(2021, 04, 24))
       expected = {
-        encryption: "hello world",
-        key: 'xxxxx',
+        encryption: "kgfarbqduny",
+        key: "02715",
         date: Date.today.strftime('%m%d%y')
       }
 
