@@ -7,44 +7,28 @@ class Enigma
   #   @date = Date.today.strftime('%m%d%y')
   # end
 
+  def generate_random_key
+    numbers_array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    five_digit_random = numbers_array.sample(5)
+    five_digit_random.join
+  end
+
   def characters_set
     chr_set = ("a".."z").to_a << " "
   end
 
   def encrypt(encryption,
-    key = 5.times.map{rand(10)}.join,
+    key = generate_random_key,
     date = Date.today.strftime('%m%d%y')
   )
+
     downcase_encryption = encryption.downcase
     encryption_array = downcase_encryption.split("")
-    convert_keys = key.chars
 
-    join_keys = []
-    convert_keys.each_cons(2) do |key|
-      join_keys << key.join
-    end
+    conversion = Conversion.new
+    convert_shift = conversion.calculate_shift(key, date)
 
-    join_keys_to_integer = join_keys.map do |key|
-      key.to_i
-    end
-
-    offset = (date.to_i ** 2).to_s
-    last_four_offset = offset.split("").last(4)
-    last_four_to_integer = last_four_offset.map do |offset|
-      offset.to_i
-    end
-
-    join_keys_and_offsets = []
-    join_keys_and_offsets << join_keys_to_integer
-    join_keys_and_offsets << last_four_to_integer
-    join_keys_and_offsets
-
-    calculate_shift = join_keys_and_offsets.transpose.map do |shift|
-      shift.reduce(0) do |sum, integer|
-        sum + integer
-      end
-    end
-
+# Cipher class
     encryption_index_array = []
     encryption_array.each do |chr|
       if !characters_set.include?(chr)
@@ -54,7 +38,7 @@ class Enigma
       end
     end
 
-    combined_encrypt = encryption_index_array.zip(calculate_shift.cycle)
+    combined_encrypt = encryption_index_array.zip(convert_shift.cycle)
     final_encrypt_numbers = combined_encrypt.map do |encrypt_numbers|
       if encrypt_numbers.any?{ |chr| chr.instance_of?(String) }
         encrypt_numbers.find{ |chr| chr.instance_of?(String) }
@@ -65,6 +49,7 @@ class Enigma
       end
     end
 
+# enigma class
     encrypted = final_encrypt_numbers.map do |shift|
       if shift.instance_of?(String)
         shift
@@ -80,46 +65,18 @@ class Enigma
       key: key,
       date: date
       }
-    # convert to hash as {
-    # encryption: "keder ohulw",
-    # key: "02715",
-    # date: "040895"
-    # }
   end
 
   def decrypt(decryption,
     key,
-    date = Date.today.strftime('%m%d%y'))
+    date = Date.today.strftime('%m%d%y')
+  )
+
     lowercase_decryption = decryption.downcase
     decryption_array = lowercase_decryption.split("")
-    convert_keys = key.chars
 
-    join_keys = []
-    convert_keys.each_cons(2) do |key|
-      join_keys << key.join
-    end
-    join_keys
-
-    join_keys_to_integer = join_keys.map do |key|
-      key.to_i
-    end
-
-    offset = (date.to_i ** 2).to_s
-    last_four_offset = offset.split("").last(4)
-    last_four_to_integer = last_four_offset.map do |offset|
-      offset.to_i
-    end
-
-    join_keys_and_offsets = []
-    join_keys_and_offsets << join_keys_to_integer
-    join_keys_and_offsets << last_four_to_integer
-    join_keys_and_offsets
-
-    calculate_shift = join_keys_and_offsets.transpose.map do |shift|
-      shift.reduce(0) do |sum, integer|
-        sum + integer
-      end
-    end
+    conversion = Conversion.new
+    convert_shift = conversion.calculate_shift(key, date)
 
     decryption_index_array = []
     decryption_array.each do |chr|
@@ -130,7 +87,7 @@ class Enigma
       end
     end
 
-    combined_decrypt = decryption_index_array.zip(calculate_shift.cycle)
+    combined_decrypt = decryption_index_array.zip(convert_shift.cycle)
     final_decrypt_numbers = combined_decrypt.map do |(num1, num2)|
       if num1.instance_of?(String)
         num1
