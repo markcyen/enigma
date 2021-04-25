@@ -1,14 +1,17 @@
+require 'date'
+
 class Enigma
 
-  def initialize
-    @encrypt = Hash.new { |hash, key| hash[key] = {} }
-  end
+  # def initialize
+  #   @encrypt = Hash.new { |hash, key| hash[key] = {} }
+  #   @date = Date.today.strftime('%m%d%y')
+  # end
 
   def characters_set
     chr_set = ("a".."z").to_a << " "
   end
 
-  def encrypt(encryption, key, date)
+  def encrypt(encryption, key, date = Date.today.strftime('%m%d%y'))
     downcase_encryption = encryption.downcase
     encryption_array = downcase_encryption.split("")
     convert_keys = key.chars
@@ -52,7 +55,7 @@ class Enigma
     end
 
     encrypted = final_encrypt_numbers.map do |shift|
-      if shift > characters_set.size
+      if shift >= characters_set.size
         characters_set[shift % 27]
       else
         characters_set[shift]
@@ -71,7 +74,7 @@ class Enigma
     # }
   end
 
-  def decrypt(decryption, key, date)
+  def decrypt(decryption, key, date = Date.today.strftime('%m%d%y'))
     lowercase_decryption = decryption.downcase
     decryption_array = lowercase_decryption.split("")
     convert_keys = key.chars
@@ -114,7 +117,7 @@ class Enigma
     end
 
     decrypted = final_decrypt_numbers.map do |shift|
-      if shift < -characters_set.size
+      if shift <= -characters_set.size
         characters_set[shift % 27]
       else
         characters_set[shift]
