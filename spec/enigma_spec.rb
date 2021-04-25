@@ -20,6 +20,17 @@ RSpec.describe Enigma do
       }
       expect(enigma.encrypt("hello world", "02715", "040895")).to eq(expected)
     end
+
+    it 'encrypts simple message with special character' do
+      enigma = Enigma.new
+
+      expected = {
+        encryption: "keder!sprrdx",
+        key: "02715",
+        date: "040895"
+      }
+      expect(enigma.encrypt("hello! world", "02715", "040895")).to eq(expected)
+    end
   end
 
   context '#decrypt' do
@@ -32,6 +43,17 @@ RSpec.describe Enigma do
         date: "040895"
       }
       expect(enigma.decrypt("keder ohulw", "02715", "040895")).to eq(expected)
+    end
+
+    it 'decrypts simple message with special character' do
+      enigma = Enigma.new
+
+      expected = {
+        decryption: "hello! world",
+        key: "02715",
+        date: "040895"
+      }
+      expect(enigma.decrypt("keder!sprrdx", "02715", "040895")).to eq(expected)
     end
   end
 
@@ -64,10 +86,13 @@ RSpec.describe Enigma do
   context '#encrypt with random five digit number' do
     it 'encrypts message using five digit random number and todays date' do
       enigma = Enigma.new
+      conversion = Conversion.new
 
+      allow(enigma).to receive(:generate_random_key) { "02715" }
+      allow(Date).to receive(:today).and_return(Date.new(2021, 04, 24))
       expected = {
-        encryption: "hello world",
-        key: 'xxxxx',
+        encryption: "kgfarbqduny",
+        key: "02715",
         date: Date.today.strftime('%m%d%y')
       }
 
