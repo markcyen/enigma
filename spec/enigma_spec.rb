@@ -35,10 +35,10 @@ RSpec.describe Enigma do
     end
   end
 
-  context '#encrypt' do
+  context '#encrypt with todays date' do
     it 'encrypts message with default to todays date' do
       enigma = Enigma.new
-
+      allow(Date).to receive(:today).and_return(Date.new(2021, 04, 24))
       expected = {
         encryption: "kgfarbqduny",
         key: "02715",
@@ -48,16 +48,30 @@ RSpec.describe Enigma do
     end
   end
 
-  context '#decrypt' do
+  context '#decrypt with todays date' do
     it 'decrypts message with default to todays date' do
       enigma = Enigma.new
-
+      allow(Date).to receive(:today).and_return(Date.new(2021, 04, 24))
       expected = {
         decryption: "hello world",
         key: "02715",
         date: Date.today.strftime('%m%d%y')
       }
       expect(enigma.decrypt("kgfarbqduny", "02715")).to eq(expected)
+    end
+  end
+
+  context '#encrypt with random five digit number' do
+    it 'encrypts message using five digit random number and todays date' do
+      enigma = Enigma.new
+
+      expected = {
+        encryption: "hello world",
+        key: 'xxxxx',
+        date: Date.today.strftime('%m%d%y')
+      }
+
+      expect(enigma.encrypt("hello world")).to eq(expected)
     end
   end
 end
