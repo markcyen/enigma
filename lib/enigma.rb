@@ -1,11 +1,10 @@
 require 'date'
+require './spec/spec_helper'
 
 class Enigma
 
   def generate_random_key
-    numbers_array = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    five_digit_random = numbers_array.sample(5)
-    five_digit_random.join
+    5.times.map { rand(10) }.join
   end
 
   def characters_set
