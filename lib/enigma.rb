@@ -1,19 +1,13 @@
-require 'date'
 require './spec/spec_helper'
 
 class Enigma
-
   def generate_random_key
     5.times.map { rand(10) }.join
   end
 
-  def characters_set
-    ("a".."z").to_a << " "
-  end
-
   def encrypt(message,
     key = generate_random_key,
-    date = Date.today.strftime('%m%d%y')
+    date = Date.today.strftime('%d%m%y')
   )
 
     encrypt_message = EncryptionAlgorithm.new
@@ -27,7 +21,7 @@ class Enigma
 
   def decrypt(encrypted_message,
     key,
-    date = Date.today.strftime('%m%d%y')
+    date = Date.today.strftime('%d%m%y')
   )
 
     decrypt_encryption = DecryptionAlgorithm.new
