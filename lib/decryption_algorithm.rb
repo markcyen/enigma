@@ -2,8 +2,8 @@ class DecryptionAlgorithm
   include MessageArrayable
 
   def final_decrypt_numbers(encrypted_message, key, date)
-    conversion = Conversion.new
-    convert_shift = conversion.calculate_shift(key, date)
+    # conversion = Conversion.new
+    convert_shift = Conversion.calculate_shift(key, date)
 
     combined_decrypt = message_index_array(encrypted_message).zip(convert_shift.cycle)
     final_decrypt_numbers = combined_decrypt.map do |(num1, num2)|
