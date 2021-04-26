@@ -74,12 +74,17 @@ RSpec.describe Enigma do
     it 'decrypts message with default to todays date' do
       enigma = Enigma.new
       allow(Date).to receive(:today).and_return(Date.new(2021, 04, 24))
+      encrypted = {
+        encryption: "kgfarbqduny",
+        key: "02715",
+        date: Date.today.strftime('%m%d%y')
+      }
       expected = {
         decryption: "hello world",
         key: "02715",
         date: Date.today.strftime('%m%d%y')
       }
-      expect(enigma.decrypt("kgfarbqduny", "02715")).to eq(expected)
+      expect(enigma.decrypt(encrypted[:encryption], "02715")).to eq(expected)
     end
   end
 
