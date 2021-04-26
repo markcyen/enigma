@@ -2,8 +2,8 @@ class EncryptionAlgorithm
   include MessageArrayable
 
   def final_encrypt_numbers(message, key, date)
-    conversion = Conversion.new
-    convert_shift = conversion.calculate_shift(key, date)
+    # conversion = Conversion.new
+    convert_shift = Conversion.calculate_shift(key, date)
 
     combined_encrypt = message_index_array(message).zip(convert_shift.cycle)
     final_encrypt_numbers = combined_encrypt.map do |encrypt_numbers|
