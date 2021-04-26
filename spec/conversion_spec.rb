@@ -9,6 +9,15 @@ RSpec.describe Conversion do
     end
   end
 
+  context '#calculate_shift(key, date)' do
+    it 'calculates shift to encrypt' do
+      conversion = Conversion.new
+
+      expected = [3, 27, 73, 20]
+      expect(conversion.calculate_shift("02715", "040895")).to eq(expected)
+    end
+  end
+
   context '#convert_key(key)' do
     it 'converts key into an integer array' do
       conversion = Conversion.new
