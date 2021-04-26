@@ -1,22 +1,5 @@
 class EncryptionAlgorithm
-
-  def characters_set
-    ("a".."z").to_a << " "
-  end
-
-  def message_index_array(message)
-    downcase_message = message.downcase
-    message_array = downcase_message.split("")
-    message_index_array = []
-    message_array.each do |chr|
-      if !characters_set.include?(chr)
-        message_index_array << chr
-      else
-        message_index_array << characters_set.index(chr)
-      end
-    end
-    message_index_array
-  end
+  include MessageArrayable
 
   def final_encrypt_numbers(message, key, date)
     conversion = Conversion.new

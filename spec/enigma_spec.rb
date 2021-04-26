@@ -10,7 +10,7 @@ RSpec.describe Enigma do
   end
 
   context '#encrypt' do
-    it 'encrypts simple message' do
+    it 'encrypts simple message with given key and date' do
       enigma = Enigma.new
 
       expected = {
@@ -62,9 +62,9 @@ RSpec.describe Enigma do
       enigma = Enigma.new
       allow(Date).to receive(:today).and_return(Date.new(2021, 04, 24))
       expected = {
-        encryption: "kgfarbqduny",
+        encryption: "qgfaxbqd ny",
         key: "02715",
-        date: Date.today.strftime('%m%d%y')
+        date: Date.today.strftime('%d%m%y')
       }
       expect(enigma.encrypt("hello world", "02715")).to eq(expected)
     end
@@ -75,30 +75,35 @@ RSpec.describe Enigma do
       enigma = Enigma.new
       allow(Date).to receive(:today).and_return(Date.new(2021, 04, 24))
       encrypted = {
-        encryption: "kgfarbqduny",
+        encryption: "qgfaxbqd ny",
         key: "02715",
-        date: Date.today.strftime('%m%d%y')
+        date: Date.today.strftime('%d%m%y')
       }
       expected = {
         decryption: "hello world",
         key: "02715",
-        date: Date.today.strftime('%m%d%y')
+        date: Date.today.strftime('%d%m%y')
       }
       expect(enigma.decrypt(encrypted[:encryption], "02715")).to eq(expected)
     end
   end
 
-  context '#encrypt with random five digit number' do
+  context '#generate_random_key' do
+    it 'checks for generated five-digit random key' do
+      enigma = Enigma.new
+
+      expect(enigma.generate_random_key.size).to eq(5)
+    end
+
     it 'encrypts message using five digit random number and todays date' do
       enigma = Enigma.new
-      conversion = Conversion.new
 
       allow(enigma).to receive(:generate_random_key) { "02715" }
       allow(Date).to receive(:today).and_return(Date.new(2021, 04, 24))
       expected = {
-        encryption: "kgfarbqduny",
+        encryption: "qgfaxbqd ny",
         key: "02715",
-        date: Date.today.strftime('%m%d%y')
+        date: Date.today.strftime('%d%m%y')
       }
 
       expect(enigma.encrypt("hello world")).to eq(expected)
