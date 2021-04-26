@@ -9,16 +9,6 @@ RSpec.describe EncryptionAlgorithm do
     end
   end
 
-  context '#message_index_array(message)' do
-    it 'converts message into coded array' do
-      encryption_algorithm = EncryptionAlgorithm.new
-      message = "hello world"
-
-      expected = [7, 4, 11, 11, 14, 26, 22, 14, 17, 11, 3]
-      expect(encryption_algorithm.message_index_array(message)).to eq(expected)
-    end
-  end
-
   context '#final_encrypt_numbers(message, key, date)' do
     it 'converts message into encrypted array' do
       encryption_algorithm = EncryptionAlgorithm.new
