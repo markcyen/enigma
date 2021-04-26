@@ -1,6 +1,6 @@
 require "pry"
 
-decryption = "keder ohulw"
+decryption = "keder!sprrdx"
 key = "02715"
 date = "040895"
 
@@ -52,23 +52,32 @@ end
 
 decryption_index_array = []
 decryption_array.each do |chr|
-  decryption_index_array << characters_set.index(chr)
+  if !characters_set.include?(chr)
+    decryption_index_array << chr
+  else
+    decryption_index_array << characters_set.index(chr)
+  end
 end
 # => [10, 4, 3, 4, 17, 26, 14, 7, 20, 11, 22]
 
 combined_decrypt = decryption_index_array.zip(calculate_shift.cycle)
 # => [[10, 3], [4, 27], [3, 73], [4, 20], [17, 3], [26, 27], [14, 73], [7, 20], [20, 3], [11, 27], [22, 73]]
+# => [[10, 3], [4, 27], [3, 73], [4, 20], [17, 3], ["!", 27], [18, 73], [15, 20], [17, 3], [17, 27], [3, 73], [23, 20]]
 final_decrypt_numbers = combined_decrypt.map do |(num1, num2)|
-  # decrypt_numbers.each do |(num1, num2)|
-  num1 - num2
-  # end
+  if num1.instance_of?(String)
+    num1
+  else
+    num1 - num2
+  end
 end
 # => [7, -23, -70, -16, 14, -1, -59, -13, 17, -16, -51]
 
 decrypted = final_decrypt_numbers.map do |shift|
-  if shift < -characters_set.size
+  if shift.instance_of?(String)
+    shift
+  elsif shift <= -characters_set.size
     # encrypted <<
-    characters_set[shift % 27]
+    characters_set[shift % characters_set.size]
   else
     # encrypted <<
     characters_set[shift]
