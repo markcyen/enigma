@@ -1,4 +1,3 @@
-
 class EncryptionAlgorithm
 
   def characters_set
