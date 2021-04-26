@@ -1,6 +1,6 @@
 require "pry"
 
-encryption = "hello world"
+encryption = "h!ello world"
 key = "02715"
 date = "040895"
 
@@ -99,33 +99,47 @@ end
 
 encryption_index_array = []
 encryption_array.each do |chr|
-  encryption_index_array << characters_set.index(chr)
-end
-# => [7, 4, 11, 11, 14, 26, 22, 14, 17, 11, 3]
-
-combined_encrypt = encryption_index_array.zip(calculate_shift.cycle)
-# => [[7, 3], [4, 27], [11, 73], [11, 20], [14, 3], [26, 27], [22, 73], [14, 20], [17, 3], [11, 27], [3, 73]]
-final_encrypt_numbers = combined_encrypt.map do |encrypt_numbers|
-  encrypt_numbers.reduce(0) do |sum, number|
-    sum + number
+  if !characters_set.include?(chr)
+    encryption_index_array << chr
+  else
+    encryption_index_array << characters_set.index(chr)
   end
 end
-# => [10, 31, 84, 31, 17, 53, 95, 34, 20, 38, 76]
+# => [7, 4, 11, 11, 14, 26, 22, 14, 17, 11, 3]
+# => [7, "!", 4, 11, 11, 14, 26, 22, 14, 17, 11, 3]
 
+combined_encrypt = encryption_index_array.zip(calculate_shift.cycle)
+require "pry"; binding.pry
+# => [[7, 3], [4, 27], [11, 73], [11, 20], [14, 3], [26, 27], [22, 73], [14, 20], [17, 3], [11, 27], [3, 73]]
+
+final_encrypt_numbers = combined_encrypt.map do |encrypt_numbers|
+  if encrypt_numbers.any?{ |chr| chr.instance_of?(String) }
+    encrypt_numbers.find{ |chr| chr.instance_of?(String) }
+  else
+    encrypt_numbers.reduce(0) do |sum, number|
+      sum + number
+    end
+  end
+end
+
+
+# => [10, 31, 84, 31, 17, 53, 95, 34, 20, 38, 76]
+# => [10, 31, 84, 31, 17, "!", 53, 95, 34, 20, 38, 76]
+# => [10, "!", 77, 31, 14, 41, 99, 42, 17, 44, 84, 23]
 
 # characters_set => ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " "]
 
 # encrypted = []
 encrypted = final_encrypt_numbers.map do |shift|
-  if shift > characters_set.size
-    # encrypted <<
-    characters_set[shift % 27]
+  if shift.instance_of?(String)
+    shift
+  elsif shift >= characters_set.size
+    characters_set[shift % characters_set.size]
   else
-    # encrypted <<
     characters_set[shift]
   end
 end.join
-
+require "pry"; binding.pry
 # encryption_index_and_calc_shift = []
 # encryption_index_and_calc_shift << encryption_index_array
 # encryption_index_and_calc_shift << calculate_shift
