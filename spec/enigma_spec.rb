@@ -9,6 +9,21 @@ RSpec.describe Enigma do
     end
   end
 
+  context '#validate?(date)' do
+    it 'checks if date is valid' do
+      enigma = Enigma.new
+      date_1 = "040895"
+
+      expect(enigma.validate?(date_1)).to eq(true)
+
+      date_2 = "04081995"
+      expect(enigma.validate?(date_2)).to eq(false)
+
+      date_3 = "Aug 4 1995"
+      expect(enigma.validate?(date_3)).to eq(false)
+    end
+  end
+
   context '#encrypt' do
     it 'encrypts simple message with given key and date' do
       enigma = Enigma.new
@@ -19,6 +34,20 @@ RSpec.describe Enigma do
         date: "040895"
       }
       expect(enigma.encrypt("hello world", "02715", "040895")).to eq(expected)
+    end
+
+    it 'encrypts simple message but with incorrect key' do
+      enigma = Enigma.new
+
+      expected = "Invalid entry!"
+      expect(enigma.encrypt("hello world", "027157", "040895")).to eq(expected)
+    end
+
+    it 'encrypts simple message but with incorrect date' do
+      enigma = Enigma.new
+
+      expected = "Invalid entry!"
+      expect(enigma.encrypt("hello world", "02715", "0408955")).to eq(expected)
     end
 
     it 'encrypts simple message with special character' do
@@ -43,6 +72,26 @@ RSpec.describe Enigma do
         date: "040895"
       }
       expect(enigma.decrypt("keder ohulw", "02715", "040895")).to eq(expected)
+    end
+
+    it 'decrypts a default message when entering incorrect key' do
+      enigma = Enigma.new
+      decrypted_message = enigma.decrypt("keder ohulw", "027157", "040895")
+
+      expected = "You didn't provide something in proper order.\n" +
+                 "Something smells fishy 🐟"
+
+      expect(decrypted_message[:decryption]).to eq(expected)
+    end
+
+    it 'decrypts a default message when entering incorrect date' do
+      enigma = Enigma.new
+      decrypted_message = enigma.decrypt("keder ohulw", "027157", "0408957")
+
+      expected = "You didn't provide something in proper order.\n" +
+                 "Something smells fishy 🐟"
+
+      expect(decrypted_message[:decryption]).to eq(expected)
     end
 
     it 'decrypts simple message with special character' do
